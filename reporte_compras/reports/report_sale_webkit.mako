@@ -41,7 +41,7 @@ table, td, th
     <tr>
     <td>
     %for m in get_money():
-    ${helper.embed_image('jpeg',str(get_result(data)['invoice_obj'][0].company_id.logo),180, 85)}
+    ${helper.embed_image('jpeg',str(get_logo()[0].logo),180, 85)}
     <% total = 0 %>
     </td>
     </tr>
@@ -92,7 +92,7 @@ table, td, th
                     <% a = e.price_unit * e.product_qty %>
                     <%sub = a * TC %>
                     <% total = total + sub %>
-                    <td align="center"  width="10%">${formatLang(sub) or '0.00'}</td>
+                    <td align="center"  width="10%">$ ${formatLang(sub) or '0.00'}</td>
                     </tr>
                     %endfor
                     </table>

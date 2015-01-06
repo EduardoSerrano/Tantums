@@ -17,6 +17,7 @@ class ReportStatus(report_sxw.rml_parse):
             'get_date': self.get_date,
             'get_tc': self.get_tc,
             'get_money': self.get_money,
+            'get_logo': self.get_logo,
         })
         self.invoice_ids = []
         self.moves_obj = []
@@ -85,7 +86,10 @@ class ReportStatus(report_sxw.rml_parse):
         self.invoice_ids= self.pool.get('stock.picking').search(self.cr, self.uid, filtro, order="purchase_id")
         invoice_obj= self.pool.get('stock.picking').browse(self.cr, self.uid, self.invoice_ids)
             
-        return {'invoice_obj': invoice_obj}
+        if invoice_obj:
+            return {'invoice_obj': invoice_obj}
+        else:
+            return raise osv.except_osv('Error','NO Se Encontro Informacion')
 
     def get_date(self,date_done):
         fecha = str(date_done)
@@ -106,6 +110,12 @@ class ReportStatus(report_sxw.rml_parse):
         money_obj = self.pool.get('res.currency').browse(self.cr,self.uid,money_id)
 
         return money_obj
+
+    def get_logo(self):
+        logo_id = self.pool.get('res.company').search(self.cr,self.uid,[('id','=',1)])
+        logo_obj = self.pool.get('res.company').browse(self.cr,self.uid,logo_id)
+
+        return logo_obj
 
 
 report_sxw.report_sxw('report.purchase', 'reporte.compras.wizard', 'reporte_compras/reports/report_sale_webkit.mako', parser = ReportStatus)
