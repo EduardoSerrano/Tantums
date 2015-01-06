@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+		<record id = "view_relation_stock_invoice_wizard" model="ir.ui.view">
+			<field name= "name">Relation Stock And Invoice </field>
+			<field name= "model">report.stock.invoice</field>
+			<field name= "arch" type="xml">
+				<form string="Relation stock invoice" version= "7.0">
+					<group>
+						<field name="purchase_id"/>
+						<field name="start_date"/>
+						<field name="end_date"/>
+					</group>
+					<footer>
+						<button name="print_report" string="Imprimir" type="object" icon="gtk-print" class="oe_highlight"/>
+						<button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record model = "ir.actions.act_window" id="action_report_stock">
+			<field name="name">Reporte</field>
+			<field name="res_model">report.stock.invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+
+	<menuitem id="submenu_relation" name="Almacen y Facturas" parent="purchase.menu_procurement_management"/>
+	<menuitem id="submenu_relacion_purchase_invoice" name="Reporte Almacen Y Facturas" action="action_report_stock" parent="submenu_relation"/>
+
+</data>
+</openerp>

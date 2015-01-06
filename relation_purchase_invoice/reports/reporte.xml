@@ -1,0 +1,12 @@
+<openerp>
+    <data>
+        <report id="report_stock_and_invoice"
+            string="Report PO And Invoice"
+            model="report.stock.invoice"
+            name="reportstock"
+            file="relation_purchase_invoice/reports/report_po_invoice.mako"
+            report_type="webkit"
+            auto="False"
+            menu="False"/>
+    </data>
+</openerp>
