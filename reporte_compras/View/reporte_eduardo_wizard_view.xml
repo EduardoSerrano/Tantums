@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+		<record id = "view_reporte_compras_report_wizard" model="ir.ui.view">
+			<field name= "name">Reporte compras </field>
+			<field name= "model">reporte.compras.wizard</field>
+			<field name= "arch" type="xml">
+				<form string="Reporte de Compras" version= "7.0">
+					<group>
+						<field name="product_id"/>
+						<field name="warehouse_id"/>
+						<field name="partner_id"/>
+						<field name="start_date"/>
+						<field name="end_date"/>
+					</group>
+					<footer>
+						<button name="print_report" string="imprimir" type="object" icon="gtk-print" class="oe_highlight"/>
+						<button icon="gtk-cancel" special="cancel" string="Cancelar"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+
+		<record model = "ir.actions.act_window" id="action_reporte_compras">
+			<field name="name">Reporte de Compras</field>
+			<field name="res_model">reporte.compras.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+
+	<menuitem id="submenu_reportes_compras" name="Reportes De Compras" parent="purchase.menu_procurement_management"/>
+	<menuitem id="submenu_reporte_mensual_compras" name="Reporte Mensual Compras" action="action_reporte_compras" parent="submenu_reportes_compras"/>
+
+</data>
+</openerp>

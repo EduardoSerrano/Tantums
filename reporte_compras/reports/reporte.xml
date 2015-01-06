@@ -1,0 +1,12 @@
+<openerp>
+    <data>
+        <report id="report_purchase"
+            string="Reporte Mensual De Compras"
+            model="reporte.compras.wizard"
+            name="purchase"
+            file="reporte_compras/reports/report_sale_webkit.mako"
+            report_type="webkit"
+            auto="False"
+            menu="False"/>
+    </data>
+</openerp>
