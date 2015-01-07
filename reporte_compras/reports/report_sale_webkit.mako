@@ -96,7 +96,6 @@ table, td, th
                 <% total = total + sub %>
                 <td align="center"  width="10%">$ ${formatLang(sub) or '0.00'}</td>
                 </tr>
-                <br>
                 %endfor
 
             %elif not get_result(data)['Insumos']:
@@ -117,7 +116,6 @@ table, td, th
                 <% total = total + sub %>
                 <td align="center"  width="10%">$ ${formatLang(sub) or '0.00'}</td>
                 </tr>
-                <br>
                 %endfor
             %endif
             
