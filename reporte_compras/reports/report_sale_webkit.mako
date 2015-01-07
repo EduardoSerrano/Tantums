@@ -46,7 +46,7 @@ table, td, th
     </td>
     </tr>
         <tr>
-            <th style='min-width:80%; font-size:12pt' colspan="9" align="center">Reporte De Compras</th>
+            <th style='min-width:80%; font-size:12pt' colspan="9" align="center">Reporte De Compras de <p>${formatLang(data['form']['start_date'],date=True) | entity }${_('  A  :')}${formatLang(data['form']['end_date'],date=True) | entity}</p></th>
         </tr>
     </table>
     <table class='table' width="100%" cellspacing="0" cellpadding="3px">
@@ -69,39 +69,65 @@ table, td, th
             </table>
         </tr>
     
-                <tr class="subhead">
-                %for o in get_result(data)['invoice_obj']:
-                    <td align="left" width="5%">${o.purchase_id.warehouse_id.name}</td>
-                    <td align="left" width="10%">${get_date(o.date_done)}</td>
-                    <td align="left" width="15%">${o.partner_id.name}</td>
-                    <td align="left" width="10%">${o.purchase_id.name}</td>
-                    <td colspan ="5" width="60%"><table width="100%" cellspacing="100">
-                    <tr>
-                    %for e in o.move_lines:
-                    <td align="left" width="20%">${e.name}</td>
-                    <td align="center" width="10%">${e.product_qty}</td>
-                    <td align="center" width="10%">${e.product_uom.name}</td>
-                    <td align="center" width="10%">${e.price_unit}</td>
-                    %if o.purchase_id.pricelist_id.currency_id.name == m.name:
+        %for o in get_result(data)['invoice_obj']:
+        <tr class="subhead">
+                <td align="left" width="5%">${o.purchase_id.warehouse_id.name}</td>
+                <td align="left" width="10%">${get_date(o.date_done)}</td>
+                <td align="left" width="15%">${o.partner_id.name}</td>
+                <td align="left" width="10%">${o.purchase_id.name}</td>
+                <td colspan ="5" width="60%"><table width="100%" cellspacing="100">
+        <tr>
+
+            %if get_result(data)['Insumos']:
+                %for i in get_stock_move(o.id,get_result(data)['Insumos']):
+                <td align="left" width="20%">${i.name}</td>
+                <td align="center" width="10%">${i.product_qty}</td>
+                <td align="center" width="10%">${i.product_uom.name}</td>
+                <td align="center" width="10%">${i.price_unit}</td>
+                %if o.purchase_id.pricelist_id.currency_id.name == m.name:
                     <td align="center" width="20%">${m.name}</td>
-                    %else:
+                %else:
                     <td align="center" width="20%">${o.purchase_id.pricelist_id.currency_id.name}<br>
                     ${1/float(get_tc(o.purchase_id.pricelist_id.currency_id.id,o.date_done))}
-                    %endif
-                    <% TC = 1/float(get_tc(o.purchase_id.pricelist_id.currency_id.id,o.date_done))%>
-                    <% a = e.price_unit * e.product_qty %>
-                    <%sub = a * TC %>
-                    <% total = total + sub %>
-                    <td align="center"  width="10%">$ ${formatLang(sub) or '0.00'}</td>
-                    </tr>
-                    %endfor
+                %endif
+                <% TC = 1/float(get_tc(o.purchase_id.pricelist_id.currency_id.id,o.date_done))%>
+                <% a = i.price_unit * i.product_qty %>
+                <%sub = a * TC %>
+                <% total = total + sub %>
+                <td align="center"  width="10%">$ ${formatLang(sub) or '0.00'}</td>
+                </tr>
+                <br>
+                %endfor
+
+            %elif not get_result(data)['Insumos']:
+                %for i in o.move_lines:
+                <td align="left" width="20%">${i.name}</td>
+                <td align="center" width="10%">${i.product_qty}</td>
+                <td align="center" width="10%">${i.product_uom.name}</td>
+                <td align="center" width="10%">${i.price_unit}</td>
+                %if o.purchase_id.pricelist_id.currency_id.name == m.name:
+                    <td align="center" width="20%">${m.name}</td>
+                %else:
+                    <td align="center" width="20%">${o.purchase_id.pricelist_id.currency_id.name}<br>
+                    ${1/float(get_tc(o.purchase_id.pricelist_id.currency_id.id,o.date_done))}
+                %endif
+                <% TC = 1/float(get_tc(o.purchase_id.pricelist_id.currency_id.id,o.date_done))%>
+                <% a = i.price_unit * i.product_qty %>
+                <%sub = a * TC %>
+                <% total = total + sub %>
+                <td align="center"  width="10%">$ ${formatLang(sub) or '0.00'}</td>
+                </tr>
+                <br>
+                %endfor
+            %endif
+            
                     </table>
                 </tr>
-                %endfor
+            %endfor
     </table>
     %endfor
     <br>
-    <h3><b><p align="right">Total Del Mes:$ ${formatLang(total) or '0.00'} </p></b></h3>
+    <h3><b><p align="right">Total:$ ${formatLang(total) or '0.00'} </p></b></h3>
     <br/>
     <br/>
 </body>

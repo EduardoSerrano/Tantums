@@ -18,9 +18,9 @@ class ReportStatus(report_sxw.rml_parse):
             'get_tc': self.get_tc,
             'get_money': self.get_money,
             'get_logo': self.get_logo,
+            'get_stock_move': self.get_stock_move,
         })
         self.invoice_ids = []
-        self.moves_obj = []
 
     def get_result(self, form):
         
@@ -68,13 +68,11 @@ class ReportStatus(report_sxw.rml_parse):
 
        #SI ELIGE INSUMOS
         if Insumos:
-            ids_products = self.pool.get('stock.picking').search(self.cr, self.uid,[('product_id', '=',Insumos)])
-            obj_products = self.pool.get('stock.picking').browse(self.cr, self.uid, ids_products)
+            ids_products = self.pool.get('stock.move').search(self.cr, self.uid,[('product_id', '=',Insumos)])
+            obj_products = self.pool.get('stock.move').browse(self.cr, self.uid, ids_products)
             for i in obj_products:
-                if i.product_id['id'] == Insumos:
-                    list_products.append(i.product_id['id'])
-                    filtro.append(('product_id','in',list_products))
-
+                list_products.append(i.product_id['id'])
+            filtro.append(('product_id','in',list_products))
 
         if Planta:
             ids_warehouse = self.pool.get('purchase.order').search(self.cr, self.uid, [('warehouse_id','=',Planta)])
@@ -85,11 +83,8 @@ class ReportStatus(report_sxw.rml_parse):
 
         self.invoice_ids= self.pool.get('stock.picking').search(self.cr, self.uid, filtro, order="purchase_id")
         invoice_obj= self.pool.get('stock.picking').browse(self.cr, self.uid, self.invoice_ids)
-            
-        if invoice_obj:
-            return {'invoice_obj': invoice_obj}
-        else:
-            return raise osv.except_osv('Error','NO Se Encontro Informacion')
+
+        return {'invoice_obj': invoice_obj,'Insumos':Insumos}
 
     def get_date(self,date_done):
         fecha = str(date_done)
@@ -116,6 +111,11 @@ class ReportStatus(report_sxw.rml_parse):
         logo_obj = self.pool.get('res.company').browse(self.cr,self.uid,logo_id)
 
         return logo_obj
+
+    def get_stock_move(self,picking_id,product_id):
+            stock_move_ids = self.pool.get('stock.move').search(self.cr,self.uid,[('picking_id','=',picking_id),('product_id','=',product_id)])
+            stock_move_objs = self.pool.get('stock.move').browse(self.cr,self.uid,stock_move_ids)
+            return stock_move_objs
 
 
 report_sxw.report_sxw('report.purchase', 'reporte.compras.wizard', 'reporte_compras/reports/report_sale_webkit.mako', parser = ReportStatus)
