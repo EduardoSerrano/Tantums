@@ -8,5 +8,17 @@
             report_type="webkit"
             auto="False"
             menu="False"/>
+
+        <record id="report_xls" model="ir.actions.report.xml">
+        <field name="name">jasper_reporte_compras_xls</field>
+        <field name="type">ir.actions.report.xml</field>
+        <field name="model">reporte.compras.wizard</field>
+        <field name="report_name">jasper_reporte_compras_xls</field>
+        <field name="report_rml">reporte_compras/reports/report.jrxml</field>
+        <field name="report_type">xls</field>
+        <field name="jasper_report">True</field>
+        <field name="jasper_output">xls</field>
+        </record>
+
     </data>
 </openerp>

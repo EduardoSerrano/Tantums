@@ -112,7 +112,7 @@ table, td, th
                 %endif
                 <% TC = 1/float(get_tc(o.purchase_id.pricelist_id.currency_id.id,o.date_done))%>
                 <% a = i.price_unit * i.product_qty %>
-                <%sub = a * TC %>
+                <% sub = a * TC %>
                 <% total = total + sub %>
                 <td align="center"  width="10%">$ ${formatLang(sub) or '0.00'}</td>
                 </tr>
