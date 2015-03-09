@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+     <data>
+        <!-- TODO:REMOVE this wizard is not used  -->
+        <record id="wizard_send_emails_view" model="ir.ui.view">
+             <field name="name">wizard.send.emails.form</field>
+             <field name="model">wizard.send.emails</field>
+             <field name="arch" type="xml">
+                <form string="Seleccionar Proveedores" version="7.0">
+                    <group>
+                        <field name="name"/>
+                        <field name="date_end"/>
+                    </group>
+                    <group >
+                        <field name="partner_rel_ids" domain="[('supplier','=',True)]"/>
+                    </group>
+                    <footer>
+                        <button name="action_send_emails" string="Enviar correos" type="object" class="wizard_send_emails"/>
+                        or
+                        <button string="Cancel" class="wizard_send_emails" special="cancel" />
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
+        <act_window name="Correo de pagos"
+            res_model="wizard.send.emails"
+            src_model="res.partner"
+            view_mode="form"
+            target="new"
+            key2="client_action_multi"
+            id="action_view_wizard_send_emails"/>
+
+	<menuitem name="Enviar correo a proveedores" id="wizard_send_email_menuitem" action="action_view_wizard_send_emails" parent="account.menu_finance_payables"/>
+
+    </data>
+</openerp>

@@ -1,0 +1,96 @@
+
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+
+class wizard_send_emails(osv.osv_memory):
+    
+    _name = 'wizard.send.emails'
+    
+    def get_html_table(self, cr, uid, details):
+        htmlTable = ''
+        htmlTable = htmlTable + """
+            <TABLE BORDER="5"    WIDTH="50%"   CELLPADDING="4" CELLSPACING="3">
+                <TR>
+                  <TH COLSPAN="4"><BR><H3>"""+str(details['name'])+"""</H3>
+                  </TH>
+                </TR> 
+                <TR>
+                  <TH>Factura</TH>
+                  <TH>Monto</TH>
+                  <TH>Pago</TH>
+                  <TH>Monto</TH>
+                </TR>
+        """
+        
+        for invoice in details['invoices']:
+            htmlTable = htmlTable + """
+                <TR ALIGN="CENTER">
+                  <TD>"""+str(invoice['number'])+"""</TD>
+                  <TD>"""+str(invoice['amount_total'])+"""</TD>
+            """
+            line = 1
+            
+            if invoice.get('payments',False):
+                for payment in invoice['payments']:
+                    if line == 2:
+                        htmlTable = htmlTable +"""
+                            <TR ALIGN="CENTER">
+                                <TD></TD>
+                                <TD></TD>
+                                <TD>"""+str(payment['number'])+"""</TD>
+                                <TD>"""+str(payment['amount'])+"""</TD>
+                            </TR>
+                        """
+                    if line == 1:
+                        htmlTable = htmlTable +"""
+                                <TD>"""+str(payment['number'])+"""</TD>
+                                <TD>"""+str(payment['amount'])+"""</TD>
+                            </TR>
+                        """
+                        line = 2
+                    
+            else:
+                htmlTable = htmlTable +"""
+                        <TD></TD>
+                        <TD>0.0</TD>
+                    </TR>
+                """
+        htmlTable = htmlTable + '</TABLE>'
+        return htmlTable
+    
+    def send_emails(self, cr, uid, details):
+        context = {}
+        for partner_detail in details:
+            if partner_detail.get('invoices', False):
+                body = self.get_html_table(cr, uid, partner_detail) 
+                send_wiz = self.pool.get('mail.mail')
+                #temp=send_wiz._get_default_from(cr, uid, context=context)
+                ir_model_data_obj = self.pool.get('ir.model.data')
+                templ_obj = self.pool.get('ir.model.data').get_object(cr, 1, 'account_partner_email_details', 'invoice_payment_mail_template')
+                body_temp = templ_obj.body_html
+                new_body = body_temp.replace('TABLE', body)
+                self.pool.get('email.template').write(cr, uid, [templ_obj.id],{'body_html':new_body},context = context)
+                mail_id = self.pool.get('email.template').send_mail(cr, uid, templ_obj.id, partner_detail['partner_id'], True, context=context)
+                self.pool.get('email.template').write(cr, uid, [templ_obj.id],{'body_html':body_temp},context = context)
+        
+        return True
+    
+    def action_send_emails(self, cr, uid, ids, context):
+        
+        partner_ids = self.read(cr, uid, ids, ['partner_rel_ids'])[0]['partner_rel_ids']
+        if not partner_ids:
+            partner_ids = self.pool.get('res.partner').search(cr, uid, [('supplier','=',True)])
+        date_start = self.browse(cr, uid, ids[0]).name
+        date_end = self.browse(cr, uid, ids[0]).date_end
+        invoices_details = self.pool.get('res.partner').get_invoices_details_dict(cr, uid, partner_ids, date_start, date_end)
+        self.send_emails(cr, uid, invoices_details)
+        
+        return True
+    
+    _columns = {
+        'name' : fields.date('Fecha inicial', ),
+        'date_end' : fields.date('Fecha final', ),
+        'partner_rel_ids' : fields.many2many('res.partner', 'wiz_emails_partner_rel', 'wizard_id', 'partner_id', 'Proveedores'),
+    }
+wizard_send_emails()
+

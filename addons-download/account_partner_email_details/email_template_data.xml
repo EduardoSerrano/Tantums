@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data noupdate="0">
+        <!-- notify all employees of module installation -->
+        <record model="email.template" id="invoice_payment_mail_template">
+            <field name="name">Plantilla para asistente de correo de pagos a proveedores</field>
+            <field name="model_id" ref="base.model_res_partner" />
+		<field name="model">res.partner</field>
+            <field name="email_from">${(user.email or '')|safe}</field>
+		<field name="email_to">${(object.email or '')|safe}</field>
+            <field name="email_recipients" >${object.id}</field>
+            <field name="subject">Resumen de facturas de ${object.company_id.name}</field>
+            <field name="body_html">TABLE</field>
+        </record>
+    </data>
+</openerp>

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record id="account_statement_report" model="ir.ui.view">
+			<field name="name">account.statement.report.form</field>
+			<field name="model">report.simple.account.statement.wizard</field>
+			<field name="arch" type="xml">
+				<form string="_('Account Simple Statement ReportXXXX')" version="7.0">
+					<group>
+						<field name="date_start"/>
+						<field name="date_finish"/>
+						<field name="partner_id"/>
+						<field name="centro_costo_id"/>
+						<field name="mov_type"/>
+
+					</group>
+					<footer>
+						<button class="oe_highlight"  name="print_report" string="_Print" type="object"/>
+						<button  special="cancel" string="_Cancel"/>
+					</footer>
+				</form>
+			</field>
+		</record>
+		<record id="action_account_statement_report" model="ir.actions.act_window">
+			<field name="name">Account Simple Statement Report</field>
+			<field name="res_model">report.simple.account.statement.wizard</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+		</record>
+		<menuitem action="action_account_statement_report" id="submenu_account_statement_report" name="Account Statement Report" parent="account.final_accounting_reports" string="Account Statement Report"/>
+	</data>
+</openerp>

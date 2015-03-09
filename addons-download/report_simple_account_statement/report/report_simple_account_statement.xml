@@ -1,0 +1,20 @@
+<openerp>
+    <data>
+        <report 
+        	file="report_simple_account_statement/report/report_simple_account_statement.mako" 
+        	id="report_simple_account_statement" 
+        	model="report.simple.account.statement.wizard" 
+        	name="simple.account.statement" 
+        	report_type="webkit" 
+        	string="Account Simple Statement Report"
+            
+            />
+       	<record id="property_header_webkit_account_statement" model="ir.property">
+            <field name="name">webkit_header</field>
+            <field name="fields_id" ref="report_webkit.field_ir_act_report_xml_webkit_header"/>
+            <field eval="'ir.header_webkit,'+str(ref('report_simple_account_statement.ir_header_webkit_account_statement'))" model="ir.header_webkit" name="value"/>
+            <field eval="'ir.actions.report.xml,'+str(ref('report_simple_account_statement.report_simple_account_statement'))" model="ir.actions.report.xml" name="res_id"/>
+        </record>
+
+    </data>
+</openerp>
